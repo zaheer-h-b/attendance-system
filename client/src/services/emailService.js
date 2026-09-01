@@ -6,18 +6,27 @@ const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
 export const sendOTPEmail = async (email, otp) => {
   try {
-    const emailMessage = `Your OTP: ${otp}\n\nThis OTP will be valid for 15 minutes.\nDo not share this OTP with anyone. If you didn't make this request, you can safely ignore this email.\n\nBest regards,\nUCUBE.AI Team`;
-    
     const templateParams = {
-      to_email: email,
-      message: emailMessage,
-      from_name: 'UCUBE.AI',
+      email: email,
+      passcode: otp,
+      time: "15 minutes",
     };
 
-    const response = await emailjs.send(SERVICE_ID, TEMPLATE_ID, templateParams, PUBLIC_KEY);
+    console.log("EmailJS parameters:", templateParams);
+
+    const response = await emailjs.send(
+      SERVICE_ID,
+      TEMPLATE_ID,
+      templateParams,
+      PUBLIC_KEY
+    );
+
+    console.log("EmailJS response:", response);
+
     return response.status === 200;
+
   } catch (error) {
-    console.error('Failed to send OTP email:', error);
+    console.error("Failed to send OTP email:", error);
     return false;
   }
 };
