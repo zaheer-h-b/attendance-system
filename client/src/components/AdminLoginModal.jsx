@@ -70,7 +70,7 @@ const AdminLoginModal = ({ isOpen, onClose }) => {
             <label className="block text-sm font-medium text-gray-700 mb-2">Email or Admin ID</label>
             <input
               type="text"
-              placeholder="admin@example.com or UCUBE-5000"
+              placeholder="admin@example.com or EMP-5000"
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition"
               value={emailOrId}
               onChange={(e) => setEmailOrId(e.target.value)}
