@@ -51,7 +51,7 @@ const LandingPage = () => {
           </div>
 
           <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-            UCUBE.AI
+            Employee Attendance Tracker
           </h1>
           <p className="text-2xl md:text-3xl text-gray-700 mb-4 font-semibold">
             Employee Attendance System
@@ -131,7 +131,7 @@ const LandingPage = () => {
 
           {/* Info Section */}
           <div className="mt-16 pt-12 border-t border-gray-200">
-            <h3 className="text-lg font-semibold text-gray-900 mb-8">Why Choose UCUBE.AI?</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-8">Why Choose Employee Attendance Tracker?</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="bg-white p-4 rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition">
                 <div className="text-2xl mb-2">✅</div>
