@@ -64,7 +64,7 @@ const AdminLogin = () => {
                 type="text"
                 value={emailOrId}
                 onChange={(e) => setEmailOrId(e.target.value)}
-                placeholder="admin@company.com or UCUBE-5000"
+                placeholder="admin@company.com or EMP-5000"
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition"
                 disabled={loading}
               />
