@@ -11,10 +11,12 @@ const AdminRegisterModal = ({ isOpen, onClose }) => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [key, setKey] = useState("");
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState(1); // 1: form, 2: OTP verification
+
+  const [step, setStep] = useState(1);
   const [otp, setOtp] = useState("");
   const [generatedOTP, setGeneratedOTP] = useState("");
   const [otpLoading, setOtpLoading] = useState(false);
+
   const ADMIN_KEY = import.meta.env.VITE_ADMIN_KEY;
 
   const validatePassword = (pwd) => {
@@ -23,15 +25,31 @@ const AdminRegisterModal = ({ isOpen, onClose }) => {
     const hasLowerCase = /[a-z]/.test(pwd);
     const hasNumbers = /[0-9]/.test(pwd);
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(pwd);
-    
-    if (pwd.length < minLength) return "Password must be at least 8 characters";
-    if (!hasUpperCase) return "Password must contain uppercase letter";
-    if (!hasLowerCase) return "Password must contain lowercase letter";
-    if (!hasNumbers) return "Password must contain a number";
-    if (!hasSpecialChar) return "Password must contain a special character";
+
+    if (pwd.length < minLength) {
+      return "Password must be at least 8 characters";
+    }
+
+    if (!hasUpperCase) {
+      return "Password must contain uppercase letter";
+    }
+
+    if (!hasLowerCase) {
+      return "Password must contain lowercase letter";
+    }
+
+    if (!hasNumbers) {
+      return "Password must contain a number";
+    }
+
+    if (!hasSpecialChar) {
+      return "Password must contain a special character";
+    }
+
     return null;
   };
 
+  // Send OTP
   const sendOTP = async (e) => {
     e.preventDefault();
 
@@ -46,6 +64,7 @@ const AdminRegisterModal = ({ isOpen, onClose }) => {
     }
 
     const passwordError = validatePassword(password);
+
     if (passwordError) {
       toast.error(passwordError);
       return;
@@ -57,24 +76,40 @@ const AdminRegisterModal = ({ isOpen, onClose }) => {
     }
 
     setOtpLoading(true);
+
     try {
       const newOTP = generateOTP();
+
       setGeneratedOTP(newOTP);
-      
+
+      console.log("Generated OTP:", newOTP);
+      console.log("Sending OTP to:", email);
+
       const sent = await sendOTPEmail(email, newOTP);
+
       if (sent) {
         toast.success("OTP sent to your email!");
         setStep(2);
       } else {
-        toast.error("Failed to send OTP. Please check EmailJS configuration.");
+        toast.error(
+          "Failed to send OTP. Please check EmailJS configuration."
+        );
       }
     } catch (error) {
+      console.error("========== OTP EMAIL ERROR ==========");
+      console.error("Error:", error);
+      console.error("Status:", error?.status);
+      console.error("Text:", error?.text);
+      console.error("Message:", error?.message);
+      console.error("====================================");
+
       toast.error("Error sending OTP");
     } finally {
       setOtpLoading(false);
     }
   };
 
+  // Verify OTP
   const verifyOTP = async (e) => {
     e.preventDefault();
 
@@ -84,6 +119,7 @@ const AdminRegisterModal = ({ isOpen, onClose }) => {
     }
 
     setLoading(true);
+
     try {
       const res = await api.post("/auth/register", {
         name,
@@ -93,7 +129,10 @@ const AdminRegisterModal = ({ isOpen, onClose }) => {
         key,
       });
 
+      console.log("Registration response:", res.data);
+
       toast.success("Registration successful!");
+
       setTimeout(() => {
         setStep(1);
         setOtp("");
@@ -103,23 +142,37 @@ const AdminRegisterModal = ({ isOpen, onClose }) => {
         setPassword("");
         setConfirmPassword("");
         setKey("");
+
         onClose();
       }, 1500);
     } catch (err) {
-      toast.error(err.response?.data?.message || "Registration failed");
+      console.error("Registration error:", err);
+      console.log("Backend response:", err.response?.data);
+
+      toast.error(
+        err.response?.data?.message || "Registration failed"
+      );
+
       setStep(2);
     } finally {
       setLoading(false);
     }
   };
 
+  // Resend OTP
   const resendOTP = async () => {
     setOtpLoading(true);
+
     try {
       const newOTP = generateOTP();
+
       setGeneratedOTP(newOTP);
-      
+
+      console.log("Generated new OTP:", newOTP);
+      console.log("Resending OTP to:", email);
+
       const sent = await sendOTPEmail(email, newOTP);
+
       if (sent) {
         toast.success("OTP resent to your email!");
         setOtp("");
@@ -127,36 +180,72 @@ const AdminRegisterModal = ({ isOpen, onClose }) => {
         toast.error("Failed to resend OTP");
       }
     } catch (error) {
+      console.error("========== RESEND OTP ERROR ==========");
+      console.error("Error:", error);
+      console.error("Status:", error?.status);
+      console.error("Text:", error?.text);
+      console.error("Message:", error?.message);
+      console.error("======================================");
+
       toast.error("Error resending OTP");
     } finally {
       setOtpLoading(false);
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
 
   return (
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 overflow-y-auto pointer-events-auto">
-      <form onSubmit={step === 1 ? sendOTP : verifyOTP} className="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-lg border border-gray-100 my-8 pointer-events-auto">
+      <form
+        onSubmit={step === 1 ? sendOTP : verifyOTP}
+        className="bg-white p-6 rounded-2xl shadow-2xl w-full max-w-lg border border-gray-100 my-8 pointer-events-auto"
+      >
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">Admin Register</h2>
-            <p className="text-xs text-gray-600 mt-1">{step === 1 ? 'Create admin account' : 'Verify email'}</p>
+            <h2 className="text-2xl font-bold text-gray-900">
+              Admin Register
+            </h2>
+
+            <p className="text-xs text-gray-600 mt-1">
+              {step === 1
+                ? "Create admin account"
+                : "Verify email"}
+            </p>
           </div>
+
           <button
+            type="button"
             onClick={onClose}
             className="p-1 hover:bg-gray-100 rounded-lg transition"
           >
-            <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            <svg
+              className="w-5 h-5 text-gray-500"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         </div>
 
         {step === 1 ? (
           <div className="grid grid-cols-2 gap-3">
+
+            {/* Name */}
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">Name</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1">
+                Name
+              </label>
+
               <input
                 type="text"
                 placeholder="Full Name"
@@ -167,8 +256,12 @@ const AdminRegisterModal = ({ isOpen, onClose }) => {
               />
             </div>
 
+            {/* Email */}
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">Email</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1">
+                Email
+              </label>
+
               <input
                 type="email"
                 placeholder="admin@example.com"
@@ -179,8 +272,12 @@ const AdminRegisterModal = ({ isOpen, onClose }) => {
               />
             </div>
 
+            {/* Password */}
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">Password</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1">
+                Password
+              </label>
+
               <input
                 type="password"
                 placeholder="Password"
@@ -191,20 +288,30 @@ const AdminRegisterModal = ({ isOpen, onClose }) => {
               />
             </div>
 
+            {/* Confirm Password */}
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">Confirm Password</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1">
+                Confirm Password
+              </label>
+
               <input
                 type="password"
                 placeholder="Confirm password"
                 className="w-full px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition"
                 value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                onChange={(e) =>
+                  setConfirmPassword(e.target.value)
+                }
                 disabled={otpLoading}
               />
             </div>
 
+            {/* Admin Key */}
             <div className="col-span-2">
-              <label className="block text-xs font-medium text-gray-700 mb-1">Admin Key</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1">
+                Admin Key
+              </label>
+
               <input
                 type="password"
                 placeholder="Enter admin key"
@@ -215,6 +322,7 @@ const AdminRegisterModal = ({ isOpen, onClose }) => {
               />
             </div>
 
+            {/* Continue */}
             <button
               type="submit"
               disabled={otpLoading}
@@ -222,7 +330,10 @@ const AdminRegisterModal = ({ isOpen, onClose }) => {
             >
               {otpLoading ? (
                 <>
-                  <Spinner size="sm" className="text-white" />
+                  <Spinner
+                    size="sm"
+                    className="text-white"
+                  />
                   Sending OTP...
                 </>
               ) : (
@@ -232,23 +343,34 @@ const AdminRegisterModal = ({ isOpen, onClose }) => {
           </div>
         ) : (
           <div className="space-y-3">
+
             <p className="text-xs text-gray-600 text-center mb-4">
-              We've sent a 6-digit OTP to <span className="font-semibold text-gray-900">{email}</span>
+              We've sent a 6-digit OTP to{" "}
+              <span className="font-semibold text-gray-900">
+                {email}
+              </span>
             </p>
-            
+
+            {/* OTP */}
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">Enter OTP</label>
+              <label className="block text-xs font-medium text-gray-700 mb-1">
+                Enter OTP
+              </label>
+
               <input
                 type="text"
                 placeholder="000000"
                 maxLength="6"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent outline-none transition text-center text-lg tracking-widest font-semibold"
                 value={otp}
-                onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                onChange={(e) =>
+                  setOtp(e.target.value.replace(/\D/g, ""))
+                }
                 disabled={loading}
               />
             </div>
 
+            {/* Verify */}
             <button
               type="submit"
               disabled={loading || otp.length !== 6}
@@ -256,7 +378,10 @@ const AdminRegisterModal = ({ isOpen, onClose }) => {
             >
               {loading ? (
                 <>
-                  <Spinner size="sm" className="text-white" />
+                  <Spinner
+                    size="sm"
+                    className="text-white"
+                  />
                   Verifying...
                 </>
               ) : (
@@ -264,15 +389,19 @@ const AdminRegisterModal = ({ isOpen, onClose }) => {
               )}
             </button>
 
+            {/* Resend */}
             <button
               type="button"
               onClick={resendOTP}
               disabled={otpLoading}
               className="w-full px-4 py-2 bg-gray-100 text-gray-700 text-sm rounded-lg font-semibold hover:bg-gray-200 transition disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              {otpLoading ? 'Resending...' : 'Resend OTP'}
+              {otpLoading
+                ? "Resending..."
+                : "Resend OTP"}
             </button>
 
+            {/* Back */}
             <button
               type="button"
               onClick={() => {
