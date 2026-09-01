@@ -30,8 +30,16 @@ export const register = async (req, res) => {
       user: formatUserResponse(user)
     });
   } catch (error) {
-    res.status(500).json({ message: 'Registration failed' });
-  }
+  console.error("========== REGISTRATION ERROR ==========");
+  console.error("Message:", error.message);
+  console.error("Name:", error.name);
+  console.error("Stack:", error.stack);
+  console.error("========================================");
+
+  res.status(500).json({
+    message: error.message
+  });
+}
 };
 
 export const login = async (req, res) => {
