@@ -33,7 +33,7 @@ userSchema.pre('save', async function () {
         { new: true, upsert: true }
       );
       const baseNumber = this.role === 'admin' ? 5000 : 1000;
-      this.employeeId = `UCUBE-${baseNumber + counter.seq}`;
+      this.employeeId = String(baseNumber + counter.seq);
     } catch (error) {
       throw error;
     }
