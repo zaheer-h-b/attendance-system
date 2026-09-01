@@ -24,7 +24,7 @@ const Footer = () => {
                   <path d="M13 7H7v6h6V7z" /><path fillRule="evenodd" d="M7 2a1 1 0 012 0v1h2V2a1 1 0 112 0v1h2V2a1 1 0 112 0v1h1a2 2 0 012 2v2h1a1 1 0 110 2h-1v2h1a1 1 0 110 2h-1v2h1a1 1 0 110 2h-1v1a2 2 0 01-2 2h-1v1a1 1 0 11-2 0v-1h-2v1a1 1 0 11-2 0v-1H7v1a1 1 0 11-2 0v-1H4a2 2 0 01-2-2v-1H1a1 1 0 110-2h1v-2H1a1 1 0 010-2h1V9H1a1 1 0 110-2h1V6a2 2 0 012-2h1V2a1 1 0 010-2zm12 2v12H1V4h18z" clipRule="evenodd" />
                 </svg>
               </div>
-              <span className="text-lg font-bold text-white">UCUBE.AI</span>
+              <span className="text-lg font-bold text-white">Employee Attendance Tracker</span>
             </div>
             <p className="text-sm text-gray-400 mb-4">
               Modern attendance management system designed for enterprises. Track, manage, and optimize workforce attendance with ease.
@@ -97,7 +97,7 @@ const Footer = () => {
               </div>
               <div>
                 <p className="text-xs text-gray-500 uppercase tracking-wider">Email</p>
-                <p className="text-sm text-white font-medium">support@ucube.ai</p>
+                <p className="text-sm text-white font-medium">support@company.com</p>
               </div>
             </div>
 
@@ -109,7 +109,7 @@ const Footer = () => {
               </div>
               <div>
                 <p className="text-xs text-gray-500 uppercase tracking-wider">Phone</p>
-                <p className="text-sm text-white font-medium">+1 (555) 123-4567</p>
+                <p className="text-sm text-white font-medium">12345678</p>
               </div>
             </div>
 
@@ -130,7 +130,7 @@ const Footer = () => {
         {/* Bottom Footer */}
         <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row items-center justify-between">
           <p className="text-sm text-gray-400">
-            © {currentYear} UCUBE.AI. All rights reserved.
+            © {currentYear} Employee Attendance Tracker. All rights reserved.
           </p>
   
         </div>
