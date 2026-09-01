@@ -37,7 +37,7 @@ const Header = () => {
               </svg>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">UCUBE.AI</h1>
+              <h1 className="text-xl font-bold text-gray-900">Employee Attendance Tracker</h1>
               <p className="text-xs text-gray-500">Attendance System</p>
             </div>
           </div>
