@@ -1,4 +1,3 @@
-
 import dotenv from 'dotenv';
 import express from 'express';
 import cors from 'cors';
@@ -38,6 +37,7 @@ const corsOptions = {
 
     // Allow requests with no origin
     // (Postman, server-to-server requests, etc.)
+
     if (!origin) {
       return callback(null, true);
     }
@@ -46,7 +46,9 @@ const corsOptions = {
       return callback(null, true);
     }
 
-    return callback(new Error(`CORS not allowed for origin: ${origin}`));
+    return callback(
+      new Error(`CORS not allowed for origin: ${origin}`)
+    );
   },
 
   credentials: true,
@@ -74,7 +76,10 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ extended: true }));
+
+app.use(express.urlencoded({
+  extended: true
+}));
 
 
 // ======================================================
@@ -82,9 +87,17 @@ app.use(express.urlencoded({ extended: true }));
 // ======================================================
 
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.set(
+  'views',
+  path.join(__dirname, 'views')
+);
+
+app.use(
+  express.static(
+    path.join(__dirname, 'public')
+  )
+);
 
 
 // ======================================================
@@ -103,7 +116,10 @@ async function connectDatabase() {
 
     } catch (err) {
 
-      console.error('Database connection error:', err);
+      console.error(
+        'Database connection error:',
+        err
+      );
 
       if (process.env.NODE_ENV !== 'production') {
         process.exit(1);
@@ -115,17 +131,26 @@ async function connectDatabase() {
 connectDatabase();
 
 
-// MongoDB connection events
+// ======================================================
+// MONGODB CONNECTION EVENTS
+// ======================================================
 
 const db = mongoose.connection;
 
 db.on(
   'error',
-  console.error.bind(console, 'connection error')
+  console.error.bind(
+    console,
+    'connection error'
+  )
 );
 
 db.once('open', () => {
-  console.log('MongoDB connection established');
+
+  console.log(
+    'MongoDB connection established'
+  );
+
 });
 
 
@@ -133,15 +158,30 @@ db.once('open', () => {
 // API ROUTES
 // ======================================================
 
-app.use('/api/auth', authRoutes);
+app.use(
+  '/api/auth',
+  authRoutes
+);
 
-app.use('/api/attendance', attendanceRoutes);
+app.use(
+  '/api/attendance',
+  attendanceRoutes
+);
 
-app.use('/api/leaves', leaveRoutes);
+app.use(
+  '/api/leaves',
+  leaveRoutes
+);
 
-app.use('/api/stats', statsRoutes);
+app.use(
+  '/api/stats',
+  statsRoutes
+);
 
-app.use('/api/debug', debugRoutes);
+app.use(
+  '/api/debug',
+  debugRoutes
+);
 
 
 // ======================================================
@@ -193,11 +233,20 @@ app.use(errorHandler);
 // SERVER
 // ======================================================
 
-app.listen(PORT, '0.0.0.0', () => {
+// IMPORTANT:
+// Render needs the server to listen in production too.
 
-  console.log(`Server running on port ${PORT}`);
+app.listen(
+  PORT,
+  '0.0.0.0',
+  () => {
 
-});
+    console.log(
+      `Server running on port ${PORT}`
+    );
+
+  }
+);
 
 
 // ======================================================
@@ -205,4 +254,3 @@ app.listen(PORT, '0.0.0.0', () => {
 // ======================================================
 
 export default app;
-```
